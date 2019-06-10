@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--<Configuration xmlns="http://logging.apache.org/log4j/2.0/config">-->
+<Configuration>
+
+    <Properties>
+        <Property name="logdir">${sys:user.dir}/logs</Property>
+        <Property name="gobal-pattern">[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- PatternLayout示例 -->
+        <Console name="patternConsole" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="[%%pid]:%pid | [%%relative]:%relative | [%%thread]:%thread | [%%p]:%p | [%%C]:%C | [%%c]:%c | [%%file]:%file | [%%location]:%location | [%%method]:%method | [%%line]:%line | [%%X{ip}]: %X{ip} | [%%d{yyyy-MM-dd HH:mm:ss.SSS}]:%d{yyyy-MM-dd HH:mm:ss.SSS} | [%%d]:%d | [%%m]: %m | [%%n]: %n"></PatternLayout>
+        </Console>
+
+
+        <!-- RollingRandomAssessFile输出 -->
+        <RollingRandomAccessFile
+                name="RollingRandomAccessFile"
+                fileName="${logdir}/rolling-random-access-file.log"
+                filePattern="${logdir}/rolling-random-access-file-%d{yyyy-MM-dd}-%i.log.zip">
+            <!--<Filters>
+                <ThresholdFilter level="INFO" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>-->
+            <PatternLayout pattern="${gobal-pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+
+    </Appenders>
+
+    <Loggers>
+
+        <!-- 指定特定的类输出的日志级别、输出目标 -->
+        <Logger name="cn.chenzw.log42j.xml.appenders.App" level="DEBUG">
+            <AppenderRef ref="RollingRandomAccessFile"/>
+        </Logger>
+
+        <!-- 根节点默认级别: ERROR-->
+        <Root>
+            <AppenderRef ref="patternConsole"/>
+            <AppenderRef ref="RollingRandomAccessFile"/>
+        </Root>
+    </Loggers>
+</Configuration>

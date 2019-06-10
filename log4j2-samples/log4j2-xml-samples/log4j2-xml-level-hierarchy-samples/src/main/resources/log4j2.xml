@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration>
+
+    <Properties>
+        <Property name="logdir">${sys:user.dir}/logs</Property>
+        <Property name="gobal-pattern">[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- PatternLayout示例 -->
+        <Console name="patternConsole" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="[%%pid]:%pid | [%%relative]:%relative | [%%thread]:%thread | [%%p]:%p | [%%C]:%C | [%%c]:%c | [%%file]:%file | [%%location]:%location | [%%method]:%method | [%%line]:%line | [%%X{ip}]: %X{ip} | [%%d{yyyy-MM-dd HH:mm:ss.SSS}]:%d{yyyy-MM-dd HH:mm:ss.SSS} | [%%d]:%d | [%%m]: %m | [%%n]: %n"></PatternLayout>
+        </Console>
+
+
+        <!-- RollingRandomAssessFile输出 -->
+        <RollingRandomAccessFile
+                name="RollingRandomAccessFile_DEBUG"
+                fileName="${logdir}/rollingfile-debug.log"
+                filePattern="${logdir}/rollingfile-debug-%d{yyyy-MM-dd}-%i.log.zip">
+            <Filters>
+                <!-- 只输出level级别及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+                <ThresholdFilter level="INFO" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${gobal-pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile
+                name="RollingRandomAccessFile_INFO"
+                fileName="${logdir}/rollingfile-info.log"
+                filePattern="${logdir}/rollingfile-info-%d{yyyy-MM-dd}-%i.log.zip">
+            <Filters>
+                <!-- 只输出level级别及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+                <ThresholdFilter level="WARN" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${gobal-pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile
+                name="RollingRandomAccessFile_WARN"
+                fileName="${logdir}/rollingfile-warn.log"
+                filePattern="${logdir}/rollingfile-warn-%d{yyyy-MM-dd}-%i.log.zip">
+            <Filters>
+                <!-- 只输出level级别及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+                <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${gobal-pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile
+                name="RollingRandomAccessFile_ERROR"
+                fileName="${logdir}/rollingfile-error.log"
+                filePattern="${logdir}/rollingfile-error-%d{yyyy-MM-dd}-%i.log.zip">
+            <Filters>
+                <!-- 只输出level级别及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="WARN" onMatch="DENY" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${gobal-pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+    </Appenders>
+
+    <Loggers>
+
+        <!-- 指定特定的类输出的日志级别、输出目标 -->
+        <Logger name="cn.chenzw.log4j2.xml.level.hierarchy.App" level="DEBUG">
+            <AppenderRef ref="RollingRandomAccessFile_DEBUG"/>
+            <AppenderRef ref="RollingRandomAccessFile_INFO"/>
+            <AppenderRef ref="RollingRandomAccessFile_WARN"/>
+            <AppenderRef ref="RollingRandomAccessFile_ERROR"/>
+        </Logger>
+
+        <!-- 根节点默认级别: ERROR-->
+        <Root>
+            <AppenderRef ref="patternConsole"/>
+
+            <!--<AppenderRef ref="RollingRandomAccessFile_DEBUG"/>
+            <AppenderRef ref="RollingRandomAccessFile_INFO"/>
+            <AppenderRef ref="RollingRandomAccessFile_WARN"/>
+            <AppenderRef ref="RollingRandomAccessFile_ERROR"/>-->
+        </Root>
+    </Loggers>
+</Configuration>
